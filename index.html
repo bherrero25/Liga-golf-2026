@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#1a2e1a">
 <title>⛳ Liga Golf 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --green-deep: #1a2e1a;
@@ -26,9 +27,7 @@
     --radius: 16px;
     --shadow: 0 4px 24px rgba(26,46,26,0.15);
   }
-
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--green-deep);
@@ -37,7 +36,6 @@
     overflow-x: hidden;
   }
 
-  /* HERO HEADER */
   .app-header {
     background: linear-gradient(160deg, var(--green-deep) 0%, var(--green-mid) 60%, var(--green-bright) 100%);
     padding: 48px 20px 70px;
@@ -81,13 +79,8 @@
     margin-bottom: 6px;
   }
   .app-header h1 span { color: var(--gold-light); }
-  .app-header p {
-    color: rgba(255,255,255,0.6);
-    font-size: 0.9rem;
-    font-weight: 300;
-  }
+  .app-header p { color: rgba(255,255,255,0.6); font-size: 0.9rem; font-weight: 300; }
 
-  /* BOTTOM NAV */
   .bottom-nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -116,19 +109,15 @@
   .nav-btn.active { color: var(--gold-light); }
   .nav-btn .icon { font-size: 22px; }
 
-  /* MAIN CONTENT */
   .main {
     padding: 0 16px 90px;
     margin-top: -48px;
     position: relative;
     z-index: 1;
   }
-
-  /* SECTIONS */
   .section { display: none; }
   .section.active { display: block; }
 
-  /* CARDS */
   .card {
     background: var(--card-bg);
     border-radius: var(--radius);
@@ -154,14 +143,12 @@
     background: rgba(0,0,0,0.08);
   }
 
-  /* CLASIFICACIÓN */
   .ranking-item {
     display: flex;
     align-items: center;
     padding: 12px 0;
     border-bottom: 1px solid rgba(0,0,0,0.05);
     gap: 14px;
-    transition: background 0.15s;
   }
   .ranking-item:last-child { border-bottom: none; }
   .rank-pos {
@@ -177,17 +164,9 @@
   .rank-pos.p3 { background: #cd7f32; color: white; }
   .rank-pos.pN { background: rgba(0,0,0,0.08); color: var(--text-mid); }
   .rank-name { flex: 1; font-weight: 500; font-size: 0.95rem; }
-  .rank-pts {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--green-mid);
-    min-width: 36px;
-    text-align: right;
-  }
+  .rank-pts { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--green-mid); min-width: 36px; text-align: right; }
   .rank-pts-label { font-size: 10px; color: var(--text-light); font-family: 'DM Sans', sans-serif; font-weight: 400; display: block; text-align: right; }
 
-  /* JORNADA SELECTOR */
   .jornada-tabs {
     display: flex;
     gap: 8px;
@@ -210,13 +189,8 @@
     color: var(--text-mid);
     transition: all 0.2s;
   }
-  .jtab.active {
-    background: var(--green-mid);
-    border-color: var(--green-mid);
-    color: white;
-  }
+  .jtab.active { background: var(--green-mid); border-color: var(--green-mid); color: white; }
 
-  /* RESULTADOS FORM */
   .result-row {
     display: flex;
     align-items: center;
@@ -241,6 +215,7 @@
     -webkit-appearance: none;
   }
   .result-input:focus { outline: none; border-color: var(--green-bright); }
+
   .save-btn {
     width: 100%;
     padding: 14px;
@@ -255,11 +230,10 @@
     margin-top: 16px;
     letter-spacing: 0.5px;
     transition: opacity 0.2s, transform 0.1s;
-    active: transform 0.1s;
   }
   .save-btn:active { transform: scale(0.98); opacity: 0.9; }
+  .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  /* TOAST */
   .toast {
     position: fixed;
     bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -277,7 +251,6 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* CALENDAR */
   .cal-row {
     display: grid;
     grid-template-columns: 40px 1fr;
@@ -298,10 +271,6 @@
     flex-shrink: 0;
   }
   .cal-num.played { background: var(--gold); color: var(--green-deep); }
-  .cal-info { flex: 1; }
-  .cal-campo { font-weight: 600; font-size: 0.95rem; color: var(--text-dark); }
-  .cal-campo.empty { color: var(--text-light); font-style: italic; font-weight: 400; }
-  .cal-date { font-size: 0.8rem; color: var(--text-light); margin-top: 2px; }
   .cal-input {
     width: 100%;
     padding: 7px 10px;
@@ -315,7 +284,6 @@
   }
   .cal-input:focus { outline: none; border-color: var(--green-bright); }
 
-  /* STATS */
   .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -333,30 +301,16 @@
   .stat-value { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; }
   .stat-sub { font-size: 11px; opacity: 0.7; margin-top: 2px; }
 
-  /* EVOLUCION CHART */
-  .evo-chart {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 4px;
-  }
-  canvas { max-width: 100%; }
+  .bar-wrap { display: flex; align-items: flex-end; gap: 6px; height: 70px; margin-top: 12px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--green-bright); min-height: 4px; transition: height 0.6s; }
+  .bar-lbl { font-size: 9px; color: var(--text-light); }
+  .bar-val { font-size: 10px; font-weight: 600; color: var(--green-mid); }
 
-  /* VIAJES */
-  .viaje-row {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-  }
+  .viaje-row { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
   .viaje-row:last-child { border-bottom: none; }
-  .viaje-title { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
-  .viaje-badge {
-    font-size: 10px;
-    background: var(--green-light);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 600;
-  }
-  .viaje-detail { font-size: 0.82rem; color: var(--text-light); margin-top: 4px; }
+  .viaje-title { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .viaje-badge { font-size: 10px; background: var(--green-light); color: white; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
   .viaje-input {
     width: 100%;
     padding: 7px 10px;
@@ -365,24 +319,14 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 0.85rem;
     background: var(--sand-light);
-    margin-top: 6px;
+    margin-top: 5px;
   }
   .viaje-input:focus { outline: none; border-color: var(--green-bright); }
 
-  /* SECTION LABEL */
-  .section-hero {
-    padding: 0 4px 20px;
-  }
-  .section-hero h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--white);
-    margin-bottom: 2px;
-  }
+  .section-hero { padding: 0 4px 20px; }
+  .section-hero h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--white); margin-bottom: 2px; }
   .section-hero p { color: rgba(255,255,255,0.5); font-size: 0.85rem; }
 
-  /* JORNADA BADGE */
   .jornada-status {
     display: inline-flex;
     align-items: center;
@@ -398,26 +342,6 @@
   }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-light); }
 
-  /* MINI BAR CHART */
-  .bar-wrap { display: flex; align-items: flex-end; gap: 6px; height: 60px; margin-top: 12px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--green-bright); min-height: 4px; transition: height 0.6s; }
-  .bar-lbl { font-size: 9px; color: var(--text-light); }
-  .bar-val { font-size: 10px; font-weight: 600; color: var(--green-mid); }
-
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center;
-    padding: 32px 20px;
-    color: var(--text-light);
-  }
-  .empty-state .icon { font-size: 3rem; margin-bottom: 10px; }
-  .empty-state p { font-size: 0.9rem; }
-
-  /* MEDAL BADGES */
-  .medal { font-size: 1.1rem; }
-
-  /* HIGHLIGHT */
   .highlight-card {
     background: linear-gradient(135deg, var(--green-deep), #2d5016);
     color: white;
@@ -427,72 +351,92 @@
     position: relative;
     overflow: hidden;
   }
-  .highlight-card::after {
-    content: '🏆';
-    position: absolute;
-    right: 16px; top: 50%; transform: translateY(-50%);
-    font-size: 3rem;
-    opacity: 0.15;
-  }
+  .highlight-card::after { content: '🏆'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 3rem; opacity: 0.15; }
   .highlight-card .hl-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.6; }
   .highlight-card .hl-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 4px 0; }
   .highlight-card .hl-pts { color: var(--gold-light); font-size: 0.85rem; font-weight: 500; }
+
+  /* LOADING */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: var(--green-deep);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 999;
+    transition: opacity 0.4s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .loading-ball { font-size: 3rem; animation: bounce 0.8s infinite alternate; }
+  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+  .loading-text { color: rgba(255,255,255,0.6); margin-top: 16px; font-size: 0.9rem; }
+
+  /* SYNC indicator */
+  .sync-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green-light);
+    display: inline-block;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
+  .sync-dot.error { background: #e05; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 </style>
 </head>
 <body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-ball">⛳</div>
+  <div class="loading-text">Cargando la liga...</div>
+</div>
 
 <!-- HEADER -->
 <div class="app-header">
   <div class="header-badge">Temporada 2026</div>
   <h1>Liga Golf<br><span>2026</span></h1>
-  <p>5 parejas · 8 jornadas · ¡A por el trofeo!</p>
+  <p>5 parejas · 8 jornadas · ¡A por el trofeo! <span class="sync-dot" id="sync-dot"></span></p>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-  <!-- SECCIÓN DASHBOARD -->
+  <!-- DASHBOARD -->
   <div class="section active" id="sec-dashboard">
     <div class="section-hero">
       <h2>Dashboard</h2>
       <p>Clasificación en tiempo real</p>
-      <div id="jornada-indicator" class="jornada-status"><div class="dot"></div> Liga en curso</div>
+      <div id="jornada-indicator" class="jornada-status"><div class="dot"></div> Cargando...</div>
     </div>
-
-    <!-- LÍDER -->
     <div id="lider-card" class="highlight-card" style="display:none">
       <div class="hl-label">🥇 Líder actual</div>
       <div class="hl-name" id="lider-name">–</div>
       <div class="hl-pts" id="lider-pts"></div>
     </div>
-
-    <!-- CLASIFICACIÓN -->
     <div class="card">
       <div class="card-title">🏆 Clasificación</div>
-      <div id="ranking-list"></div>
+      <div id="ranking-list"><div style="color:var(--text-light);font-size:0.9rem;text-align:center;padding:20px">Cargando...</div></div>
     </div>
-
-    <!-- MINI CHART EVOLUCIÓN -->
     <div class="card">
-      <div class="card-title">📈 Evolución por jornada</div>
+      <div class="card-title">📈 Puntos por pareja</div>
       <div id="mini-bars"></div>
     </div>
   </div>
 
-  <!-- SECCIÓN RESULTADOS -->
+  <!-- RESULTADOS -->
   <div class="section" id="sec-resultados">
     <div class="section-hero">
       <h2>Resultados</h2>
       <p>Introduce los Stableford de cada jornada</p>
     </div>
     <div class="card">
-      <div class="card-title">🗓️ Jornada</div>
+      <div class="card-title">🗓️ Selecciona jornada</div>
       <div class="jornada-tabs" id="jornada-tabs"></div>
       <div id="resultados-form"></div>
     </div>
   </div>
 
-  <!-- SECCIÓN CALENDARIO -->
+  <!-- CALENDARIO -->
   <div class="section" id="sec-calendario">
     <div class="section-hero">
       <h2>Calendario</h2>
@@ -501,11 +445,11 @@
     <div class="card">
       <div class="card-title">📅 Jornadas programadas</div>
       <div id="calendario-list"></div>
-      <button class="save-btn" onclick="saveCalendario()">💾 Guardar calendario</button>
+      <button class="save-btn" id="btn-save-cal" onclick="saveCalendario()">💾 Guardar calendario</button>
     </div>
   </div>
 
-  <!-- SECCIÓN ESTADÍSTICAS -->
+  <!-- STATS -->
   <div class="section" id="sec-stats">
     <div class="section-hero">
       <h2>Estadísticas</h2>
@@ -514,7 +458,7 @@
     <div id="stats-content"></div>
   </div>
 
-  <!-- SECCIÓN VIAJES -->
+  <!-- VIAJES -->
   <div class="section" id="sec-viajes">
     <div class="section-hero">
       <h2>Viajes</h2>
@@ -523,35 +467,31 @@
     <div class="card">
       <div class="card-title">✈️ Info por jornada</div>
       <div id="viajes-list"></div>
-      <button class="save-btn" onclick="saveViajes()">💾 Guardar viajes</button>
+      <button class="save-btn" id="btn-save-viajes" onclick="saveViajes()">💾 Guardar viajes</button>
     </div>
   </div>
 
-</div><!-- /main -->
+</div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="nav-btn active" onclick="goTo('dashboard', this)">
-    <span class="icon">🏠</span>Inicio
-  </button>
-  <button class="nav-btn" onclick="goTo('resultados', this)">
-    <span class="icon">⛳</span>Resultados
-  </button>
-  <button class="nav-btn" onclick="goTo('calendario', this)">
-    <span class="icon">📅</span>Calendario
-  </button>
-  <button class="nav-btn" onclick="goTo('stats', this)">
-    <span class="icon">📊</span>Stats
-  </button>
-  <button class="nav-btn" onclick="goTo('viajes', this)">
-    <span class="icon">✈️</span>Viajes
-  </button>
+  <button class="nav-btn active" onclick="goTo('dashboard', this)"><span class="icon">🏠</span>Inicio</button>
+  <button class="nav-btn" onclick="goTo('resultados', this)"><span class="icon">⛳</span>Resultados</button>
+  <button class="nav-btn" onclick="goTo('calendario', this)"><span class="icon">📅</span>Calendario</button>
+  <button class="nav-btn" onclick="goTo('stats', this)"><span class="icon">📊</span>Stats</button>
+  <button class="nav-btn" onclick="goTo('viajes', this)"><span class="icon">✈️</span>Viajes</button>
 </nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- DATA ----
+// ---- SUPABASE ----
+const SUPA_URL = 'https://thzurasttoyqphepvhlc.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoenVyYXN0dG95cXBoZXB2aGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MTgwNzAsImV4cCI6MjA4ODI5NDA3MH0.1-27SeMionuhPMAyX8tJMddTw8tilk4l_AJ41HD7dcI';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+// ---- CONFIG ----
 const PAREJAS = [
   'Eduardo & Marianela',
   'Poti & Vanesa',
@@ -560,47 +500,77 @@ const PAREJAS = [
   'Conchita & Betsabé'
 ];
 const N_JORNADAS = 8;
-
-// Puntos liga según posición (1º=5, 2º=4, 3º=3, 4º=2, 5º=1)
 const PUNTOS_POSICION = [5, 4, 3, 2, 1];
+const COLORES = ['#4a8c1c','#7ab648','#d4a017','#2d5016','#f0c040'];
 
-// ---- STORAGE ----
-function getData() {
+// ---- STATE ----
+let STATE = { resultados: {}, calendario: {}, viajes: {} };
+let activeJornada = 1;
+let currentSection = 'dashboard';
+
+// ---- INIT ----
+async function init() {
+  setSyncing(true);
   try {
-    const d = localStorage.getItem('liga_golf_2026');
-    if (d) return JSON.parse(d);
-  } catch(e) {}
-  return {
-    resultados: {}, // { "J1_Pareja": stableford }
-    calendario: {}, // { "J1": { fecha, campo, ciudad, hora } }
-    viajes: {}      // { "J1": { hotel, restaurante, notas, personas } }
-  };
+    await Promise.all([loadResultados(), loadCalendario(), loadViajes()]);
+    renderDashboard();
+    renderResultados();
+    renderCalendario();
+    renderViajes();
+  } catch(e) {
+    showToast('⚠️ Error de conexión');
+    setSyncing(false, true);
+  }
+  document.getElementById('loading').classList.add('hidden');
+  setSyncing(false);
+
+  // Realtime: escuchar cambios de resultados
+  db.channel('liga-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'liga_resultados' }, async () => {
+      await loadResultados();
+      if (currentSection === 'dashboard') renderDashboard();
+      if (currentSection === 'resultados') renderResultados();
+      if (currentSection === 'stats') renderStats();
+    })
+    .subscribe();
 }
 
-function saveData(d) {
-  localStorage.setItem('liga_golf_2026', JSON.stringify(d));
+// ---- LOAD ----
+async function loadResultados() {
+  const { data } = await db.from('liga_resultados').select('*');
+  STATE.resultados = {};
+  (data || []).forEach(r => {
+    STATE.resultados[`J${r.jornada}_${r.pareja}`] = r.stableford;
+  });
 }
 
-let STATE = getData();
+async function loadCalendario() {
+  const { data } = await db.from('liga_calendario').select('*');
+  STATE.calendario = {};
+  (data || []).forEach(r => {
+    STATE.calendario[`J${r.jornada}`] = { campo: r.campo, ciudad: r.ciudad, fecha: r.fecha, hora: r.hora };
+  });
+}
 
-// ---- PUNTOS LIGA ----
+async function loadViajes() {
+  const { data } = await db.from('liga_viajes').select('*');
+  STATE.viajes = {};
+  (data || []).forEach(r => {
+    STATE.viajes[`J${r.jornada}`] = { hotel: r.hotel, restaurante: r.restaurante, personas: r.personas, notas: r.notas };
+  });
+}
+
+// ---- PUNTOS ----
 function calcPuntosLiga() {
-  // Returns { pareja: totalPts, ... }
   const totals = {};
   PAREJAS.forEach(p => totals[p] = 0);
-
   for (let j = 1; j <= N_JORNADAS; j++) {
-    const scores = PAREJAS.map(p => ({
-      pareja: p,
-      stableford: STATE.resultados[`J${j}_${p}`] ?? null
-    }));
-    const played = scores.filter(s => s.stableford !== null && s.stableford !== '');
-    if (played.length === 0) continue;
-
+    const played = PAREJAS
+      .map(p => ({ pareja: p, stableford: STATE.resultados[`J${j}_${p}`] }))
+      .filter(s => s.stableford !== null && s.stableford !== undefined);
+    if (!played.length) continue;
     played.sort((a, b) => Number(b.stableford) - Number(a.stableford));
-    played.forEach((s, i) => {
-      totals[s.pareja] += PUNTOS_POSICION[i] || 0;
-    });
+    played.forEach((s, i) => { totals[s.pareja] += PUNTOS_POSICION[i] || 0; });
   }
   return totals;
 }
@@ -609,99 +579,80 @@ function getRanking() {
   const pts = calcPuntosLiga();
   return PAREJAS
     .map(p => ({ pareja: p, puntos: pts[p] }))
-    .sort((a, b) => b.puntos - a.puntos || a.pareja.localeCompare(b.pareja));
+    .sort((a, b) => b.puntos - a.puntos);
 }
 
-// ---- NAVIGATION ----
-let currentSection = 'dashboard';
+// ---- NAV ----
 function goTo(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + id).classList.add('active');
   if (btn) btn.classList.add('active');
   currentSection = id;
-  renderSection(id);
-}
-
-function renderSection(id) {
   if (id === 'dashboard') renderDashboard();
-  else if (id === 'resultados') renderResultados();
-  else if (id === 'calendario') renderCalendario();
   else if (id === 'stats') renderStats();
+  else if (id === 'calendario') renderCalendario();
   else if (id === 'viajes') renderViajes();
 }
 
 // ---- DASHBOARD ----
 function renderDashboard() {
   const ranking = getRanking();
-
-  // Lider card
-  const liderCard = document.getElementById('lider-card');
-  const liderName = document.getElementById('lider-name');
-  const liderPts = document.getElementById('lider-pts');
+  const pts = calcPuntosLiga();
   const hasPlayed = ranking.some(r => r.puntos > 0);
+
+  // Líder
+  const liderCard = document.getElementById('lider-card');
   if (hasPlayed) {
     liderCard.style.display = 'block';
-    liderName.textContent = ranking[0].pareja;
-    liderPts.textContent = `${ranking[0].puntos} puntos en la liga`;
+    document.getElementById('lider-name').textContent = ranking[0].pareja;
+    document.getElementById('lider-pts').textContent = `${ranking[0].puntos} puntos en la liga`;
   } else {
     liderCard.style.display = 'none';
   }
 
   // Ranking
-  const rankList = document.getElementById('ranking-list');
-  rankList.innerHTML = ranking.map((r, i) => {
+  document.getElementById('ranking-list').innerHTML = ranking.map((r, i) => {
     const posClass = i === 0 ? 'p1' : i === 1 ? 'p2' : i === 2 ? 'p3' : 'pN';
     const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
-    return `
-      <div class="ranking-item">
-        <div class="rank-pos ${posClass}">${typeof medal === 'string' ? '<span class="medal">' + medal + '</span>' : medal}</div>
-        <div class="rank-name">${r.pareja}</div>
-        <div>
-          <div class="rank-pts">${r.puntos}</div>
-          <div class="rank-pts-label">pts</div>
-        </div>
-      </div>`;
+    return `<div class="ranking-item">
+      <div class="rank-pos ${posClass}">${typeof medal === 'string' ? medal : medal}</div>
+      <div class="rank-name">${r.pareja}</div>
+      <div>
+        <div class="rank-pts">${r.puntos}</div>
+        <div class="rank-pts-label">pts</div>
+      </div>
+    </div>`;
   }).join('');
 
-  // Mini evolution bars
-  const miniBars = document.getElementById('mini-bars');
-  const pts = calcPuntosLiga();
+  // Barras
   const maxPts = Math.max(...Object.values(pts), 1);
-  const colors = ['#4a8c1c','#7ab648','#d4a017','#2d5016','#f0c040'];
-  const shortNames = PAREJAS.map(p => p.split(' & ')[0]);
-
-  miniBars.innerHTML = `<div class="bar-wrap">` +
+  document.getElementById('mini-bars').innerHTML = `<div class="bar-wrap">` +
     PAREJAS.map((p, i) => {
       const h = Math.round((pts[p] / maxPts) * 52) + 4;
       return `<div class="bar-col">
         <div class="bar-val">${pts[p]}</div>
-        <div class="bar" style="height:${h}px;background:${colors[i]}"></div>
-        <div class="bar-lbl">${shortNames[i]}</div>
+        <div class="bar" style="height:${h}px;background:${COLORES[i]}"></div>
+        <div class="bar-lbl">${p.split(' & ')[0]}</div>
       </div>`;
     }).join('') + `</div>`;
 
-  // Jornadas jugadas
-  let jornadasJugadas = 0;
+  // Indicator
+  let jugadas = 0;
   for (let j = 1; j <= N_JORNADAS; j++) {
-    if (PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined)) jornadasJugadas++;
+    if (PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined)) jugadas++;
   }
   document.getElementById('jornada-indicator').innerHTML =
-    `<div class="dot"></div> Jornada ${jornadasJugadas}/${N_JORNADAS} completada${jornadasJugadas > 0 ? 's' : ''}`;
+    `<div class="dot"></div> ${jugadas}/${N_JORNADAS} jornadas jugadas`;
 }
 
 // ---- RESULTADOS ----
-let activeJornada = 1;
-
 function renderResultados() {
   // Tabs
-  const tabs = document.getElementById('jornada-tabs');
-  tabs.innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
+  document.getElementById('jornada-tabs').innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
     const j = i + 1;
-    const hasData = PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined && STATE.resultados[`J${j}_${p}`] !== '');
-    return `<button class="jtab${j === activeJornada ? ' active' : ''}" onclick="selectJornada(${j})">
-      J${j}${hasData ? ' ✓' : ''}
-    </button>`;
+    const hasData = PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined);
+    return `<button class="jtab${j === activeJornada ? ' active' : ''}" onclick="selectJornada(${j})">J${j}${hasData ? ' ✓' : ''}</button>`;
   }).join('');
   renderResultadosForm();
 }
@@ -712,52 +663,56 @@ function selectJornada(j) {
 }
 
 function renderResultadosForm() {
-  const form = document.getElementById('resultados-form');
-  form.innerHTML = `
-    <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px">Introduce los puntos Stableford de cada pareja en la jornada ${activeJornada}:</p>
+  document.getElementById('resultados-form').innerHTML = `
+    <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px">Stableford de cada pareja en la jornada ${activeJornada}:</p>
     ${PAREJAS.map(p => {
       const val = STATE.resultados[`J${activeJornada}_${p}`] ?? '';
       return `<div class="result-row">
         <div class="result-name">${p}</div>
-        <input class="result-input" type="number" min="0" max="72" placeholder="0"
-          id="inp_${p.replace(/[^a-z]/gi,'_')}"
-          value="${val}"
-          inputmode="numeric">
+        <input class="result-input" type="number" min="0" max="72" placeholder="–"
+          id="inp_${p.replace(/[^a-z]/gi,'_')}" value="${val}" inputmode="numeric">
       </div>`;
     }).join('')}
-    <button class="save-btn" onclick="saveResultados()">✅ Guardar Jornada ${activeJornada}</button>
+    <button class="save-btn" id="btn-save-res" onclick="saveResultados()">✅ Guardar Jornada ${activeJornada}</button>
   `;
 }
 
-function saveResultados() {
-  PAREJAS.forEach(p => {
-    const id = 'inp_' + p.replace(/[^a-z]/gi,'_');
-    const el = document.getElementById(id);
-    const v = el ? el.value.trim() : '';
-    if (v !== '') {
-      STATE.resultados[`J${activeJornada}_${p}`] = Number(v);
-    } else {
-      delete STATE.resultados[`J${activeJornada}_${p}`];
+async function saveResultados() {
+  const btn = document.getElementById('btn-save-res');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  setSyncing(true);
+
+  try {
+    for (const p of PAREJAS) {
+      const id = 'inp_' + p.replace(/[^a-z]/gi,'_');
+      const v = document.getElementById(id)?.value.trim();
+      if (v !== '' && v !== undefined) {
+        await db.from('liga_resultados').upsert(
+          { jornada: activeJornada, pareja: p, stableford: Number(v), updated_at: new Date().toISOString() },
+          { onConflict: 'jornada,pareja' }
+        );
+        STATE.resultados[`J${activeJornada}_${p}`] = Number(v);
+      }
     }
-  });
-  saveData(STATE);
-  showToast('✅ Jornada ' + activeJornada + ' guardada');
-  renderResultados();
+    showToast('✅ Jornada ' + activeJornada + ' guardada');
+    renderResultados();
+    renderDashboard();
+  } catch(e) {
+    showToast('❌ Error al guardar');
+  }
+  setSyncing(false);
 }
 
 // ---- CALENDARIO ----
 function renderCalendario() {
-  const list = document.getElementById('calendario-list');
-  list.innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
+  document.getElementById('calendario-list').innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
     const j = i + 1;
     const c = STATE.calendario[`J${j}`] || {};
     const hasResult = PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined);
     return `<div class="cal-row">
+      <div><div class="cal-num${hasResult ? ' played' : ''}">${j}</div></div>
       <div>
-        <div class="cal-num ${hasResult ? 'played' : ''}">${j}</div>
-      </div>
-      <div class="cal-info">
-        <input class="cal-input" placeholder="Campo de golf" id="cal_campo_${j}" value="${c.campo || ''}" />
+        <input class="cal-input" placeholder="Campo de golf" id="cal_campo_${j}" value="${c.campo || ''}"/>
         <input class="cal-input" placeholder="Ciudad" id="cal_ciudad_${j}" value="${c.ciudad || ''}" style="margin-top:5px"/>
         <input class="cal-input" type="date" id="cal_fecha_${j}" value="${c.fecha || ''}" style="margin-top:5px"/>
         <input class="cal-input" placeholder="Hora de salida (ej: 9:00)" id="cal_hora_${j}" value="${c.hora || ''}" style="margin-top:5px"/>
@@ -766,58 +721,67 @@ function renderCalendario() {
   }).join('');
 }
 
-function saveCalendario() {
-  for (let j = 1; j <= N_JORNADAS; j++) {
-    STATE.calendario[`J${j}`] = {
-      campo: document.getElementById(`cal_campo_${j}`)?.value || '',
-      ciudad: document.getElementById(`cal_ciudad_${j}`)?.value || '',
-      fecha: document.getElementById(`cal_fecha_${j}`)?.value || '',
-      hora: document.getElementById(`cal_hora_${j}`)?.value || ''
-    };
+async function saveCalendario() {
+  const btn = document.getElementById('btn-save-cal');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  setSyncing(true);
+  try {
+    for (let j = 1; j <= N_JORNADAS; j++) {
+      const campo = document.getElementById(`cal_campo_${j}`)?.value || '';
+      const ciudad = document.getElementById(`cal_ciudad_${j}`)?.value || '';
+      const fecha = document.getElementById(`cal_fecha_${j}`)?.value || null;
+      const hora = document.getElementById(`cal_hora_${j}`)?.value || '';
+      await db.from('liga_calendario').upsert(
+        { jornada: j, campo, ciudad, fecha, hora, updated_at: new Date().toISOString() },
+        { onConflict: 'jornada' }
+      );
+      STATE.calendario[`J${j}`] = { campo, ciudad, fecha, hora };
+    }
+    showToast('📅 Calendario guardado');
+  } catch(e) {
+    showToast('❌ Error al guardar');
   }
-  saveData(STATE);
-  showToast('📅 Calendario guardado');
+  btn.disabled = false; btn.textContent = '💾 Guardar calendario';
+  setSyncing(false);
 }
 
-// ---- ESTADÍSTICAS ----
+// ---- STATS ----
 function renderStats() {
-  const content = document.getElementById('stats-content');
   const pts = calcPuntosLiga();
   const ranking = getRanking();
-
-  // Jornadas jugadas
-  let jornadasJugadas = 0;
+  let jugadas = 0;
   for (let j = 1; j <= N_JORNADAS; j++) {
-    if (PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined)) jornadasJugadas++;
+    if (PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined)) jugadas++;
   }
 
-  // Totales stableford por pareja
   const statsCards = PAREJAS.map(p => {
     const scores = [];
     for (let j = 1; j <= N_JORNADAS; j++) {
       const v = STATE.resultados[`J${j}_${p}`];
-      if (v !== undefined && v !== '') scores.push(Number(v));
+      if (v !== undefined && v !== null) scores.push(Number(v));
     }
-    const media = scores.length > 0 ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '–';
-    const mejor = scores.length > 0 ? Math.max(...scores) : '–';
-    const totalPts = pts[p];
-    return { p, media, mejor, totalPts, scores };
+    return {
+      p,
+      media: scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–',
+      mejor: scores.length ? Math.max(...scores) : '–',
+      totalPts: pts[p],
+      scores
+    };
   });
 
-  content.innerHTML = `
+  document.getElementById('stats-content').innerHTML = `
     <div class="stats-grid">
       <div class="stat-box">
         <div class="stat-label">Jornadas</div>
-        <div class="stat-value">${jornadasJugadas}</div>
+        <div class="stat-value">${jugadas}</div>
         <div class="stat-sub">de ${N_JORNADAS} jugadas</div>
       </div>
       <div class="stat-box gold">
         <div class="stat-label">Líder</div>
         <div class="stat-value" style="font-size:1rem;margin-top:4px">${ranking[0].pareja.split(' & ')[0]}</div>
-        <div class="stat-sub">${ranking[0].puntos} pts de liga</div>
+        <div class="stat-sub">${ranking[0].puntos} pts</div>
       </div>
     </div>
-
     ${statsCards.map(s => `
       <div class="card">
         <div class="card-title">${s.p}</div>
@@ -828,20 +792,20 @@ function renderStats() {
           </div>
           <div>
             <div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--green-mid)">${s.media}</div>
-            <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Media Stbl</div>
+            <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Media</div>
           </div>
           <div>
             <div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--gold)">${s.mejor}</div>
             <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Mejor J</div>
           </div>
         </div>
-        ${s.scores.length > 0 ? `
+        ${s.scores.length ? `
         <div style="margin-top:14px">
-          <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Stableford por jornada</div>
+          <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Por jornada</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             ${Array.from({length:N_JORNADAS},(_,i)=>{
               const v = STATE.resultados[`J${i+1}_${s.p}`];
-              return `<div style="width:32px;height:32px;border-radius:8px;background:${v !== undefined ? 'var(--green-bright)' : 'rgba(0,0,0,0.05)'};color:${v !== undefined ? 'white':'var(--text-light)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">${v !== undefined ? v : '–'}</div>`;
+              return `<div style="width:32px;height:32px;border-radius:8px;background:${v!==undefined?'var(--green-bright)':'rgba(0,0,0,0.05)'};color:${v!==undefined?'white':'var(--text-light)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">${v!==undefined?v:'–'}</div>`;
             }).join('')}
           </div>
         </div>` : ''}
@@ -852,8 +816,7 @@ function renderStats() {
 
 // ---- VIAJES ----
 function renderViajes() {
-  const list = document.getElementById('viajes-list');
-  list.innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
+  document.getElementById('viajes-list').innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
     const j = i + 1;
     const v = STATE.viajes[`J${j}`] || {};
     const cal = STATE.calendario[`J${j}`] || {};
@@ -863,34 +826,43 @@ function renderViajes() {
         ${titulo}
         ${cal.fecha ? `<span class="viaje-badge">${formatDate(cal.fecha)}</span>` : ''}
       </div>
-      <input class="viaje-input" placeholder="🏨 Hotel" id="viaje_hotel_${j}" value="${v.hotel || ''}" />
-      <input class="viaje-input" placeholder="🍽️ Restaurante" id="viaje_rest_${j}" value="${v.restaurante || ''}" style="margin-top:5px"/>
-      <input class="viaje-input" placeholder="👥 Personas confirmadas (ej: 10)" id="viaje_personas_${j}" value="${v.personas || ''}" style="margin-top:5px"/>
-      <input class="viaje-input" placeholder="📝 Notas (traslados, tee-time...)" id="viaje_notas_${j}" value="${v.notas || ''}" style="margin-top:5px"/>
+      <input class="viaje-input" placeholder="🏨 Hotel" id="viaje_hotel_${j}" value="${v.hotel||''}"/>
+      <input class="viaje-input" placeholder="🍽️ Restaurante" id="viaje_rest_${j}" value="${v.restaurante||''}" style="margin-top:5px"/>
+      <input class="viaje-input" placeholder="👥 Personas confirmadas" id="viaje_personas_${j}" value="${v.personas||''}" style="margin-top:5px"/>
+      <input class="viaje-input" placeholder="📝 Notas" id="viaje_notas_${j}" value="${v.notas||''}" style="margin-top:5px"/>
     </div>`;
   }).join('');
 }
 
-function saveViajes() {
-  for (let j = 1; j <= N_JORNADAS; j++) {
-    STATE.viajes[`J${j}`] = {
-      hotel: document.getElementById(`viaje_hotel_${j}`)?.value || '',
-      restaurante: document.getElementById(`viaje_rest_${j}`)?.value || '',
-      personas: document.getElementById(`viaje_personas_${j}`)?.value || '',
-      notas: document.getElementById(`viaje_notas_${j}`)?.value || ''
-    };
+async function saveViajes() {
+  const btn = document.getElementById('btn-save-viajes');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  setSyncing(true);
+  try {
+    for (let j = 1; j <= N_JORNADAS; j++) {
+      const hotel = document.getElementById(`viaje_hotel_${j}`)?.value || '';
+      const restaurante = document.getElementById(`viaje_rest_${j}`)?.value || '';
+      const personas = document.getElementById(`viaje_personas_${j}`)?.value || '';
+      const notas = document.getElementById(`viaje_notas_${j}`)?.value || '';
+      await db.from('liga_viajes').upsert(
+        { jornada: j, hotel, restaurante, personas, notas, updated_at: new Date().toISOString() },
+        { onConflict: 'jornada' }
+      );
+      STATE.viajes[`J${j}`] = { hotel, restaurante, personas, notas };
+    }
+    showToast('✈️ Viajes guardados');
+  } catch(e) {
+    showToast('❌ Error al guardar');
   }
-  saveData(STATE);
-  showToast('✈️ Viajes guardados');
+  btn.disabled = false; btn.textContent = '💾 Guardar viajes';
+  setSyncing(false);
 }
 
 // ---- UTILS ----
 function formatDate(d) {
   if (!d) return '';
-  try {
-    const dt = new Date(d);
-    return dt.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-  } catch(e) { return d; }
+  try { return new Date(d).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }); }
+  catch(e) { return d; }
 }
 
 function showToast(msg) {
@@ -900,19 +872,13 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ---- INIT ----
-renderDashboard();
-renderResultados(); // pre-render for instant switch
+function setSyncing(on, error = false) {
+  const dot = document.getElementById('sync-dot');
+  dot.className = 'sync-dot' + (on ? ' syncing' : error ? ' error' : '');
+}
 
-// Handle install banner for PWA
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  const btn = document.createElement('div');
-  btn.style.cssText = 'position:fixed;top:16px;right:16px;z-index:999;background:var(--gold);color:var(--green-deep);padding:10px 16px;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3)';
-  btn.textContent = '📲 Instalar app';
-  btn.onclick = () => { e.prompt(); btn.remove(); };
-  document.body.appendChild(btn);
-});
+// ---- START ----
+init();
 </script>
 </body>
 </html>
