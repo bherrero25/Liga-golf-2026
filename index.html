@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,407 +7,176 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a2e1a">
-  <link rel="icon" href="favicon.ico">
 <title>⛳ Liga Golf 2026</title>
+<link rel="icon" href="favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --green-deep: #1a2e1a;
-    --green-mid: #2d5016;
-    --green-bright: #4a8c1c;
-    --green-light: #7ab648;
-    --gold: #d4a017;
-    --gold-light: #f0c040;
-    --sand: #e8dcc8;
-    --sand-light: #f5f0e8;
-    --white: #ffffff;
-    --text-dark: #1a1a1a;
-    --text-mid: #4a4a4a;
-    --text-light: #888;
-    --card-bg: rgba(255,255,255,0.95);
-    --radius: 16px;
-    --shadow: 0 4px 24px rgba(26,46,26,0.15);
+    --green-deep:#1a2e1a; --green-mid:#2d5016; --green-bright:#4a8c1c;
+    --green-light:#7ab648; --gold:#d4a017; --gold-light:#f0c040;
+    --sand-light:#f5f0e8; --white:#ffffff; --text-dark:#1a1a1a;
+    --text-mid:#4a4a4a; --text-light:#888; --card-bg:rgba(255,255,255,0.95);
+    --radius:16px; --shadow:0 4px 24px rgba(26,46,26,0.15);
   }
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--green-deep);
-    color: var(--text-dark);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'DM Sans',sans-serif;background:var(--green-deep);color:var(--text-dark);min-height:100vh;overflow-x:hidden;}
 
-  .app-header {
-    background: linear-gradient(160deg, var(--green-deep) 0%, var(--green-mid) 60%, var(--green-bright) 100%);
-    padding: 48px 20px 70px;
-    position: relative;
-    overflow: hidden;
-  }
-  .app-header::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 220px; height: 220px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(212,160,23,0.18) 0%, transparent 70%);
-  }
-  .app-header::after {
-    content: '⛳';
-    position: absolute;
-    bottom: 20px; right: 24px;
-    font-size: 64px;
-    opacity: 0.12;
-    transform: rotate(-10deg);
-  }
-  .header-badge {
-    display: inline-block;
-    background: var(--gold);
-    color: var(--green-deep);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 12px;
-  }
-  .app-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.4rem;
-    font-weight: 900;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 6px;
-  }
-  .app-header h1 span { color: var(--gold-light); }
-  .app-header p { color: rgba(255,255,255,0.6); font-size: 0.9rem; font-weight: 300; }
+  .app-header{background:linear-gradient(160deg,var(--green-deep) 0%,var(--green-mid) 60%,var(--green-bright) 100%);padding:48px 20px 70px;position:relative;overflow:hidden;}
+  .app-header::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(212,160,23,0.18) 0%,transparent 70%);}
+  .app-header::after{content:'⛳';position:absolute;bottom:20px;right:24px;font-size:64px;opacity:0.12;transform:rotate(-10deg);}
+  .header-badge{display:inline-block;background:var(--gold);color:var(--green-deep);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px;}
+  .app-header h1{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:var(--white);line-height:1.1;margin-bottom:6px;}
+  .app-header h1 span{color:var(--gold-light);}
+  .app-header p{color:rgba(255,255,255,0.6);font-size:0.9rem;font-weight:300;}
 
-  .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--green-deep);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    z-index: 100;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  .nav-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    padding: 10px 4px 8px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: rgba(255,255,255,0.4);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 500;
-    transition: color 0.2s;
-  }
-  .nav-btn.active { color: var(--gold-light); }
-  .nav-btn .icon { font-size: 22px; }
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--green-deep);border-top:1px solid rgba(255,255,255,0.08);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
+  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;transition:color 0.2s;}
+  .nav-btn.active{color:var(--gold-light);}
+  .nav-btn .icon{font-size:22px;}
 
-  .main {
-    padding: 0 16px 90px;
-    margin-top: -48px;
-    position: relative;
-    z-index: 1;
-  }
-  .section { display: none; }
-  .section.active { display: block; }
+  .main{padding:0 16px 90px;margin-top:-48px;position:relative;z-index:1;}
+  .section{display:none;} .section.active{display:block;}
 
-  .card {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 14px;
-    box-shadow: var(--shadow);
-  }
-  .card-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--green-mid);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba(0,0,0,0.08);
-  }
+  .card{background:var(--card-bg);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow);}
+  .card-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-mid);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .card-title::after{content:'';flex:1;height:1px;background:rgba(0,0,0,0.08);}
 
-  .ranking-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    gap: 14px;
-  }
-  .ranking-item:last-child { border-bottom: none; }
-  .rank-pos {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-  }
-  .rank-pos.p1 { background: var(--gold); color: var(--green-deep); font-size: 1rem; }
-  .rank-pos.p2 { background: #c0c0c0; color: var(--green-deep); }
-  .rank-pos.p3 { background: #cd7f32; color: white; }
-  .rank-pos.pN { background: rgba(0,0,0,0.08); color: var(--text-mid); }
-  .rank-name { flex: 1; font-weight: 500; font-size: 0.95rem; }
-  .rank-pts { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--green-mid); min-width: 36px; text-align: right; }
-  .rank-pts-label { font-size: 10px; color: var(--text-light); font-family: 'DM Sans', sans-serif; font-weight: 400; display: block; text-align: right; }
+  /* RANKING */
+  .ranking-item{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05);gap:14px;}
+  .ranking-item:last-child{border-bottom:none;}
+  .rank-pos{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;}
+  .rank-pos.p1{background:var(--gold);color:var(--green-deep);font-size:1rem;}
+  .rank-pos.p2{background:#c0c0c0;color:var(--green-deep);}
+  .rank-pos.p3{background:#cd7f32;color:white;}
+  .rank-pos.pN{background:rgba(0,0,0,0.08);color:var(--text-mid);}
+  .rank-name{flex:1;font-weight:500;font-size:0.95rem;}
+  .rank-pts{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--green-mid);min-width:36px;text-align:right;}
+  .rank-pts-label{font-size:10px;color:var(--text-light);display:block;text-align:right;}
 
-  .jornada-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    margin-bottom: 18px;
-    scrollbar-width: none;
-  }
-  .jornada-tabs::-webkit-scrollbar { display: none; }
-  .jtab {
-    flex-shrink: 0;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1.5px solid rgba(0,0,0,0.12);
-    background: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    color: var(--text-mid);
-    transition: all 0.2s;
-  }
-  .jtab.active { background: var(--green-mid); border-color: var(--green-mid); color: white; }
+  /* TABS */
+  .jornada-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:18px;scrollbar-width:none;}
+  .jornada-tabs::-webkit-scrollbar{display:none;}
+  .jtab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid rgba(0,0,0,0.12);background:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;color:var(--text-mid);transition:all 0.2s;}
+  .jtab.active{background:var(--green-mid);border-color:var(--green-mid);color:white;}
 
-  .result-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-  }
-  .result-row:last-child { border-bottom: none; }
-  .result-name { flex: 1; font-size: 0.88rem; font-weight: 500; }
-  .result-input {
-    width: 70px;
-    padding: 8px 10px;
-    border: 1.5px solid rgba(0,0,0,0.12);
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    color: var(--text-dark);
-    background: var(--sand-light);
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  .result-input:focus { outline: none; border-color: var(--green-bright); }
+  /* TARJETA HOYO A HOYO */
+  .jugador-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .jsel-btn{padding:7px 14px;border-radius:20px;border:1.5px solid rgba(0,0,0,0.12);background:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:var(--text-mid);transition:all 0.2s;}
+  .jsel-btn.active{background:var(--green-deep);border-color:var(--green-deep);color:white;}
 
-  .save-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--green-mid), var(--green-bright));
-    color: white;
-    border: none;
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 16px;
-    letter-spacing: 0.5px;
-    transition: opacity 0.2s, transform 0.1s;
-  }
-  .save-btn:active { transform: scale(0.98); opacity: 0.9; }
-  .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .hoyo-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .hoyo-table th{background:var(--green-deep);color:white;padding:8px 6px;text-align:center;font-weight:600;font-size:11px;}
+  .hoyo-table th:first-child{text-align:left;padding-left:10px;}
+  .hoyo-table td{padding:6px;text-align:center;border-bottom:1px solid rgba(0,0,0,0.06);}
+  .hoyo-table td:first-child{text-align:left;padding-left:10px;font-weight:600;color:var(--text-mid);}
+  .hoyo-table tr:last-child td{border-bottom:none;}
+  .hoyo-table tr.total-row td{background:var(--sand-light);font-weight:700;border-top:2px solid rgba(0,0,0,0.1);}
 
-  .toast {
-    position: fixed;
-    bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--green-deep);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    z-index: 999;
-    opacity: 0;
-    transition: all 0.3s;
-    white-space: nowrap;
-    border: 1px solid rgba(255,255,255,0.15);
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .golpe-input{width:44px;padding:6px 4px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;text-align:center;background:white;-webkit-appearance:none;}
+  .golpe-input:focus{outline:none;border-color:var(--green-bright);}
 
-  .cal-row {
-    display: grid;
-    grid-template-columns: 40px 1fr;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    align-items: start;
-  }
-  .cal-row:last-child { border-bottom: none; }
-  .cal-num {
-    width: 36px; height: 36px;
-    background: var(--green-mid);
-    color: white;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-  }
-  .cal-num.played { background: var(--gold); color: var(--green-deep); }
-  .cal-input {
-    width: 100%;
-    padding: 7px 10px;
-    border: 1.5px solid rgba(0,0,0,0.1);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    color: var(--text-dark);
-    background: var(--sand-light);
-    margin-top: 4px;
-  }
-  .cal-input:focus { outline: none; border-color: var(--green-bright); }
+  .par-input{width:36px;padding:5px 2px;border:1.5px solid rgba(0,0,0,0.1);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;text-align:center;background:var(--sand-light);-webkit-appearance:none;}
+  .par-input:focus{outline:none;border-color:var(--gold);}
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .stat-box {
-    background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
-    border-radius: 14px;
-    padding: 16px 14px;
-    color: white;
-  }
-  .stat-box.gold { background: linear-gradient(135deg, #8a6200, var(--gold)); }
-  .stat-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.7; margin-bottom: 6px; }
-  .stat-value { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; }
-  .stat-sub { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+  .pts-cell{font-weight:700;font-size:13px;}
+  .pts-eagle{color:#8B00FF;}
+  .pts-birdie{color:#e05;}
+  .pts-par{color:var(--green-bright);}
+  .pts-bogey{color:var(--text-mid);}
+  .pts-zero{color:var(--text-light);}
 
-  .bar-wrap { display: flex; align-items: flex-end; gap: 6px; height: 70px; margin-top: 12px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--green-bright); min-height: 4px; transition: height 0.6s; }
-  .bar-lbl { font-size: 9px; color: var(--text-light); }
-  .bar-val { font-size: 10px; font-weight: 600; color: var(--green-mid); }
+  .stbl-total{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--green-mid);text-align:center;margin:12px 0 4px;}
+  .stbl-label{text-align:center;font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
 
-  .viaje-row { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-  .viaje-row:last-child { border-bottom: none; }
-  .viaje-title { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .viaje-badge { font-size: 10px; background: var(--green-light); color: white; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-  .viaje-input {
-    width: 100%;
-    padding: 7px 10px;
-    border: 1.5px solid rgba(0,0,0,0.1);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    background: var(--sand-light);
-    margin-top: 5px;
-  }
-  .viaje-input:focus { outline: none; border-color: var(--green-bright); }
+  .save-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--green-mid),var(--green-bright));color:white;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;margin-top:12px;transition:opacity 0.2s,transform 0.1s;}
+  .save-btn:active{transform:scale(0.98);opacity:0.9;}
+  .save-btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .save-btn.secondary{background:rgba(0,0,0,0.07);color:var(--text-mid);}
 
-  .section-hero { padding: 0 4px 20px; }
-  .section-hero h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--white); margin-bottom: 2px; }
-  .section-hero p { color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-deep);color:white;padding:12px 24px;border-radius:30px;font-size:0.9rem;font-weight:500;z-index:999;opacity:0;transition:all 0.3s;white-space:nowrap;border:1px solid rgba(255,255,255,0.15);}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  .jornada-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(74,140,28,0.15);
-    border: 1px solid rgba(74,140,28,0.3);
-    color: var(--green-light);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-top: 6px;
-  }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-light); }
+  /* CALENDARIO */
+  .cal-row{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+  .cal-row:last-child{border-bottom:none;}
+  .cal-num{width:36px;height:36px;background:var(--green-mid);color:white;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;}
+  .cal-num.played{background:var(--gold);color:var(--green-deep);}
+  .cal-input{width:100%;padding:7px 10px;border:1.5px solid rgba(0,0,0,0.1);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;background:var(--sand-light);margin-top:4px;}
+  .cal-input:focus{outline:none;border-color:var(--green-bright);}
 
-  .highlight-card {
-    background: linear-gradient(135deg, var(--green-deep), #2d5016);
-    color: white;
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 14px;
-    position: relative;
-    overflow: hidden;
-  }
-  .highlight-card::after { content: '🏆'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 3rem; opacity: 0.15; }
-  .highlight-card .hl-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.6; }
-  .highlight-card .hl-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 4px 0; }
-  .highlight-card .hl-pts { color: var(--gold-light); font-size: 0.85rem; font-weight: 500; }
+  /* STATS */
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+  .stat-box{background:linear-gradient(135deg,var(--green-deep),var(--green-mid));border-radius:14px;padding:16px 14px;color:white;}
+  .stat-box.gold{background:linear-gradient(135deg,#8a6200,var(--gold));}
+  .stat-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;}
+  .stat-value{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;}
+  .stat-sub{font-size:11px;opacity:0.7;margin-top:2px;}
 
-  /* LOADING */
-  .loading-overlay {
-    position: fixed; inset: 0;
-    background: var(--green-deep);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    z-index: 999;
-    transition: opacity 0.4s;
-  }
-  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-  .loading-ball { font-size: 3rem; animation: bounce 0.8s infinite alternate; }
-  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px); } }
-  .loading-text { color: rgba(255,255,255,0.6); margin-top: 16px; font-size: 0.9rem; }
+  .bar-wrap{display:flex;align-items:flex-end;gap:6px;height:70px;margin-top:12px;}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height 0.6s;}
+  .bar-lbl{font-size:9px;color:var(--text-light);}
+  .bar-val{font-size:10px;font-weight:600;color:var(--green-mid);}
 
-  /* SYNC indicator */
-  .sync-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--green-light);
-    display: inline-block;
-    margin-left: 6px;
-    vertical-align: middle;
-  }
-  .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
-  .sync-dot.error { background: #e05; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  /* VIAJES */
+  .viaje-row{padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+  .viaje-row:last-child{border-bottom:none;}
+  .viaje-title{font-weight:600;font-size:0.95rem;display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .viaje-badge{font-size:10px;background:var(--green-light);color:white;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .viaje-input{width:100%;padding:7px 10px;border:1.5px solid rgba(0,0,0,0.1);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;background:var(--sand-light);margin-top:5px;}
+  .viaje-input:focus{outline:none;border-color:var(--green-bright);}
+
+  .section-hero{padding:0 4px 20px;}
+  .section-hero h2{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--white);margin-bottom:2px;}
+  .section-hero p{color:rgba(255,255,255,0.5);font-size:0.85rem;}
+
+  .jornada-status{display:inline-flex;align-items:center;gap:5px;background:rgba(74,140,28,0.15);border:1px solid rgba(74,140,28,0.3);color:var(--green-light);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-top:6px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--green-light);}
+
+  .highlight-card{background:linear-gradient(135deg,var(--green-deep),#2d5016);color:white;border-radius:var(--radius);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;}
+  .highlight-card::after{content:'🏆';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:3rem;opacity:0.15;}
+  .highlight-card .hl-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;opacity:0.6;}
+  .highlight-card .hl-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin:4px 0;}
+  .highlight-card .hl-pts{color:var(--gold-light);font-size:0.85rem;font-weight:500;}
+
+  .loading-overlay{position:fixed;inset:0;background:var(--green-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity 0.4s;}
+  .loading-overlay.hidden{opacity:0;pointer-events:none;}
+  .loading-ball{font-size:3rem;animation:bounce 0.8s infinite alternate;}
+  @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-20px)}}
+  .loading-text{color:rgba(255,255,255,0.6);margin-top:16px;font-size:0.9rem;}
+
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green-light);display:inline-block;margin-left:6px;vertical-align:middle;}
+  .sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+  .hcp-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.05);gap:12px;}
+  .hcp-row:last-child{border-bottom:none;}
+  .hcp-input{width:70px;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-align:center;background:var(--sand-light);-webkit-appearance:none;}
+  .hcp-input:focus{outline:none;border-color:var(--green-bright);}
+
+  .info-box{background:rgba(74,140,28,0.08);border:1px solid rgba(74,140,28,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--text-mid);margin-bottom:14px;line-height:1.5;}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loading-overlay" id="loading">
   <div class="loading-ball">⛳</div>
   <div class="loading-text">Cargando la liga...</div>
 </div>
 
-<!-- HEADER -->
 <div class="app-header">
   <div class="header-badge">Temporada 2026</div>
   <h1>Liga Golf<br><span>2026</span></h1>
   <p>5 parejas · 8 jornadas · ¡A por el trofeo! <span class="sync-dot" id="sync-dot"></span></p>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
   <!-- DASHBOARD -->
   <div class="section active" id="sec-dashboard">
     <div class="section-hero">
-      <h2>Dashboard</h2>
-      <p>Clasificación en tiempo real</p>
+      <h2>Dashboard</h2><p>Clasificación en tiempo real</p>
       <div id="jornada-indicator" class="jornada-status"><div class="dot"></div> Cargando...</div>
     </div>
     <div id="lider-card" class="highlight-card" style="display:none">
@@ -416,7 +186,7 @@
     </div>
     <div class="card">
       <div class="card-title">🏆 Clasificación</div>
-      <div id="ranking-list"><div style="color:var(--text-light);font-size:0.9rem;text-align:center;padding:20px">Cargando...</div></div>
+      <div id="ranking-list"><div style="color:var(--text-light);text-align:center;padding:20px">Cargando...</div></div>
     </div>
     <div class="card">
       <div class="card-title">📈 Puntos por pareja</div>
@@ -424,27 +194,23 @@
     </div>
   </div>
 
-  <!-- RESULTADOS -->
-  <div class="section" id="sec-resultados">
-    <div class="section-hero">
-      <h2>Resultados</h2>
-      <p>Introduce los Stableford de cada jornada</p>
-    </div>
+  <!-- TARJETA -->
+  <div class="section" id="sec-tarjeta">
+    <div class="section-hero"><h2>Tarjeta</h2><p>Introduce tus golpes hoyo a hoyo</p></div>
     <div class="card">
-      <div class="card-title">🗓️ Selecciona jornada</div>
-      <div class="jornada-tabs" id="jornada-tabs"></div>
-      <div id="resultados-form"></div>
+      <div class="card-title">🗓️ Jornada</div>
+      <div class="jornada-tabs" id="tarjeta-jornada-tabs"></div>
+      <div class="card-title">👤 Jugador</div>
+      <div class="jugador-selector" id="jugador-selector"></div>
+      <div id="tarjeta-content"></div>
     </div>
   </div>
 
   <!-- CALENDARIO -->
   <div class="section" id="sec-calendario">
-    <div class="section-hero">
-      <h2>Calendario</h2>
-      <p>Fechas y campos de la temporada</p>
-    </div>
+    <div class="section-hero"><h2>Calendario</h2><p>Fechas, campos y pares por hoyo</p></div>
     <div class="card">
-      <div class="card-title">📅 Jornadas programadas</div>
+      <div class="card-title">📅 Jornadas</div>
       <div id="calendario-list"></div>
       <button class="save-btn" id="btn-save-cal" onclick="saveCalendario()">💾 Guardar calendario</button>
     </div>
@@ -452,433 +218,523 @@
 
   <!-- STATS -->
   <div class="section" id="sec-stats">
-    <div class="section-hero">
-      <h2>Estadísticas</h2>
-      <p>Rendimiento de las parejas</p>
-    </div>
+    <div class="section-hero"><h2>Estadísticas</h2><p>Rendimiento de las parejas</p></div>
     <div id="stats-content"></div>
   </div>
 
   <!-- VIAJES -->
   <div class="section" id="sec-viajes">
-    <div class="section-hero">
-      <h2>Viajes</h2>
-      <p>Hoteles, restaurantes y logística</p>
-    </div>
+    <div class="section-hero"><h2>Viajes</h2><p>Hoteles, restaurantes y logística</p></div>
     <div class="card">
       <div class="card-title">✈️ Info por jornada</div>
       <div id="viajes-list"></div>
       <button class="save-btn" id="btn-save-viajes" onclick="saveViajes()">💾 Guardar viajes</button>
     </div>
+    <div class="card">
+      <div class="card-title">🏌️ Handicaps</div>
+      <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px">Actualiza cuando cambien</p>
+      <div id="hcp-list"></div>
+      <button class="save-btn" onclick="saveHandicaps()">💾 Guardar handicaps</button>
+    </div>
   </div>
 
 </div>
 
-<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="nav-btn active" onclick="goTo('dashboard', this)"><span class="icon">🏠</span>Inicio</button>
-  <button class="nav-btn" onclick="goTo('resultados', this)"><span class="icon">⛳</span>Resultados</button>
-  <button class="nav-btn" onclick="goTo('calendario', this)"><span class="icon">📅</span>Calendario</button>
-  <button class="nav-btn" onclick="goTo('stats', this)"><span class="icon">📊</span>Stats</button>
-  <button class="nav-btn" onclick="goTo('viajes', this)"><span class="icon">✈️</span>Viajes</button>
+  <button class="nav-btn active" onclick="goTo('dashboard',this)"><span class="icon">🏠</span>Inicio</button>
+  <button class="nav-btn" onclick="goTo('tarjeta',this)"><span class="icon">⛳</span>Tarjeta</button>
+  <button class="nav-btn" onclick="goTo('calendario',this)"><span class="icon">📅</span>Calendario</button>
+  <button class="nav-btn" onclick="goTo('stats',this)"><span class="icon">📊</span>Stats</button>
+  <button class="nav-btn" onclick="goTo('viajes',this)"><span class="icon">✈️</span>Viajes</button>
 </nav>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- SUPABASE ----
-const SUPA_URL = 'https://thzurasttoyqphepvhlc.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoenVyYXN0dG95cXBoZXB2aGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MTgwNzAsImV4cCI6MjA4ODI5NDA3MH0.1-27SeMionuhPMAyX8tJMddTw8tilk4l_AJ41HD7dcI';
-const { createClient } = supabase;
-const db = createClient(SUPA_URL, SUPA_KEY);
+const SUPA_URL='https://thzurasttoyqphepvhlc.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoenVyYXN0dG95cXBoZXB2aGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MTgwNzAsImV4cCI6MjA4ODI5NDA3MH0.1-27SeMionuhPMAyX8tJMddTw8tilk4l_AJ41HD7dcI';
+const {createClient}=supabase;
+const db=createClient(SUPA_URL,SUPA_KEY);
 
-// ---- CONFIG ----
-const PAREJAS = [
-  'Eduardo & Marianela',
-  'Poti & Vanesa',
-  'Chema & María',
-  'Manolo & Ivana',
-  'Conchita & Betsabé'
+const PAREJAS=[
+  {id:'eduardo_marianela',nombre:'Eduardo & Marianela',jugadores:[
+    {id:'eduardo',nombre:'Eduardo',hcp:16.9},
+    {id:'marianela',nombre:'Marianela',hcp:18.8}]},
+  {id:'poti_vanesa',nombre:'Poti & Vanesa',jugadores:[
+    {id:'poti',nombre:'Poti',hcp:29.0},
+    {id:'vanesa',nombre:'Vanesa',hcp:34.6}]},
+  {id:'chema_maria',nombre:'Chema & María',jugadores:[
+    {id:'chema',nombre:'Chema',hcp:16.9},
+    {id:'maria',nombre:'María',hcp:35.0}]},
+  {id:'manolo_ivana',nombre:'Manolo & Ivana',jugadores:[
+    {id:'manolo',nombre:'Manolo',hcp:20.0},
+    {id:'ivana',nombre:'Ivana',hcp:36.0}]},
+  {id:'conchita_betsabe',nombre:'Conchita & Betsabé',jugadores:[
+    {id:'conchita',nombre:'Conchita',hcp:22.4},
+    {id:'betsabe',nombre:'Betsabé',hcp:35.5}]}
 ];
-const N_JORNADAS = 8;
-const PUNTOS_POSICION = [5, 4, 3, 2, 1];
-const COLORES = ['#4a8c1c','#7ab648','#d4a017','#2d5016','#f0c040'];
 
-// ---- STATE ----
-let STATE = { resultados: {}, calendario: {}, viajes: {} };
-let activeJornada = 1;
-let currentSection = 'dashboard';
+const TODOS_JUGADORES = PAREJAS.flatMap(p=>p.jugadores.map(j=>({...j,parejaId:p.id,parejaNombre:p.nombre})));
+const N_JORNADAS=8;
+const PAR_CAMPO=72;
+const PUNTOS=[5,4,3,2,1];
+const COLORES=['#4a8c1c','#7ab648','#d4a017','#2d5016','#f0c040'];
+
+// Pares por defecto: 4,4,3,4,4,5,3,4,4 / 4,4,3,4,5,4,3,4,5 = 72
+const DEFAULT_PARES=[4,4,3,4,4,5,3,4,4,4,4,3,4,5,4,3,4,5];
+
+let STATE={resultados:{},calendario:{},viajes:{},handicaps:{},hoyos:{},golpes:{}};
+let activeTarjetaJornada=1;
+let activeJugadorId=TODOS_JUGADORES[0].id;
+let currentSection='dashboard';
+
+PAREJAS.forEach(p=>p.jugadores.forEach(j=>{STATE.handicaps[j.id]=j.hcp;}));
 
 // ---- INIT ----
-async function init() {
+async function init(){
   setSyncing(true);
-  try {
-    await Promise.all([loadResultados(), loadCalendario(), loadViajes()]);
-    renderDashboard();
-    renderResultados();
-    renderCalendario();
-    renderViajes();
-  } catch(e) {
-    showToast('⚠️ Error de conexión');
-    setSyncing(false, true);
-  }
+  try{
+    await Promise.all([loadResultados(),loadCalendario(),loadViajes(),loadHoyos(),loadGolpes()]);
+    const saved=localStorage.getItem('liga_hcp_2026');
+    if(saved) Object.assign(STATE.handicaps,JSON.parse(saved));
+    renderAll();
+  }catch(e){showToast('⚠️ Error de conexión');}
   document.getElementById('loading').classList.add('hidden');
   setSyncing(false);
 
-  // Realtime: escuchar cambios de resultados
-  db.channel('liga-changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'liga_resultados' }, async () => {
-      await loadResultados();
-      if (currentSection === 'dashboard') renderDashboard();
-      if (currentSection === 'resultados') renderResultados();
-      if (currentSection === 'stats') renderStats();
-    })
-    .subscribe();
+  db.channel('liga-golpes').on('postgres_changes',{event:'*',schema:'public',table:'liga_golpes'},async()=>{
+    await loadGolpes();
+    await loadResultados();
+    if(currentSection==='dashboard') renderDashboard();
+    if(currentSection==='tarjeta') renderTarjetaContent();
+    if(currentSection==='stats') renderStats();
+  }).subscribe();
 }
 
-// ---- LOAD ----
-async function loadResultados() {
-  const { data } = await db.from('liga_resultados').select('*');
-  STATE.resultados = {};
-  (data || []).forEach(r => {
-    STATE.resultados[`J${r.jornada}_${r.pareja}`] = r.stableford;
-  });
+async function loadResultados(){
+  const{data}=await db.from('liga_resultados').select('*');
+  STATE.resultados={};
+  (data||[]).forEach(r=>{STATE.resultados[`J${r.jornada}_${r.pareja}`]=r.stableford;});
+}
+async function loadCalendario(){
+  const{data}=await db.from('liga_calendario').select('*');
+  STATE.calendario={};
+  (data||[]).forEach(r=>{STATE.calendario[`J${r.jornada}`]={campo:r.campo,ciudad:r.ciudad,fecha:r.fecha,hora:r.hora};});
+}
+async function loadViajes(){
+  const{data}=await db.from('liga_viajes').select('*');
+  STATE.viajes={};
+  (data||[]).forEach(r=>{STATE.viajes[`J${r.jornada}`]={hotel:r.hotel,restaurante:r.restaurante,personas:r.personas,notas:r.notas};});
+}
+async function loadHoyos(){
+  const{data}=await db.from('liga_hoyos').select('*');
+  STATE.hoyos={};
+  (data||[]).forEach(r=>{STATE.hoyos[`J${r.jornada}_H${r.hoyo}`]=r.par;});
+}
+async function loadGolpes(){
+  const{data}=await db.from('liga_golpes').select('*');
+  STATE.golpes={};
+  (data||[]).forEach(r=>{STATE.golpes[`J${r.jornada}_${r.jugador_id}_H${r.hoyo}`]=r.golpes;});
 }
 
-async function loadCalendario() {
-  const { data } = await db.from('liga_calendario').select('*');
-  STATE.calendario = {};
-  (data || []).forEach(r => {
-    STATE.calendario[`J${r.jornada}`] = { campo: r.campo, ciudad: r.ciudad, fecha: r.fecha, hora: r.hora };
-  });
+// ---- CÁLCULOS STABLEFORD ----
+function getHcp(jugadorId){
+  return STATE.handicaps[jugadorId]||TODOS_JUGADORES.find(j=>j.id===jugadorId)?.hcp||0;
 }
 
-async function loadViajes() {
-  const { data } = await db.from('liga_viajes').select('*');
-  STATE.viajes = {};
-  (data || []).forEach(r => {
-    STATE.viajes[`J${r.jornada}`] = { hotel: r.hotel, restaurante: r.restaurante, personas: r.personas, notas: r.notas };
-  });
+function getPar(jornada,hoyo){
+  return STATE.hoyos[`J${jornada}_H${hoyo}`]||DEFAULT_PARES[hoyo-1]||4;
 }
 
-// ---- PUNTOS ----
-function calcPuntosLiga() {
-  const totals = {};
-  PAREJAS.forEach(p => totals[p] = 0);
-  for (let j = 1; j <= N_JORNADAS; j++) {
-    const played = PAREJAS
-      .map(p => ({ pareja: p, stableford: STATE.resultados[`J${j}_${p}`] }))
-      .filter(s => s.stableford !== null && s.stableford !== undefined);
-    if (!played.length) continue;
-    played.sort((a, b) => Number(b.stableford) - Number(a.stableford));
-    played.forEach((s, i) => { totals[s.pareja] += PUNTOS_POSICION[i] || 0; });
+// Golpes que recibe el jugador en un hoyo según su handicap y el índice del hoyo
+// Simplificado: distribuimos handicap redondeado entre 18 hoyos
+function getExtrasHoyo(hcp, hoyo){
+  const hcpInt=Math.round(hcp);
+  const base=Math.floor(hcpInt/18);
+  const extra=hcpInt%18;
+  return base+(hoyo<=extra?1:0);
+}
+
+function calcStablefordHoyo(golpes, par, extras){
+  if(golpes===null||golpes===undefined) return null;
+  const neto=golpes-extras;
+  const diff=par-neto;
+  return Math.max(0,2+diff);
+}
+
+function calcTotalStableford(jugadorId, jornada){
+  const hcp=getHcp(jugadorId);
+  let total=0;
+  let hayDatos=false;
+  for(let h=1;h<=18;h++){
+    const g=STATE.golpes[`J${jornada}_${jugadorId}_H${h}`];
+    if(g!==undefined&&g!==null){
+      hayDatos=true;
+      const par=getPar(jornada,h);
+      const extras=getExtrasHoyo(hcp,h);
+      total+=calcStablefordHoyo(g,par,extras)||0;
+    }
+  }
+  return hayDatos?total:null;
+}
+
+function getTotalPareja(parejaId,jornada){
+  const p=PAREJAS.find(x=>x.id===parejaId);
+  if(!p) return null;
+  const vals=p.jugadores.map(j=>calcTotalStableford(j.id,jornada));
+  if(vals.some(v=>v===null)) return null;
+  return vals.reduce((a,b)=>a+b,0);
+}
+
+function calcPuntos(){
+  const totals={};
+  PAREJAS.forEach(p=>totals[p.id]=0);
+  for(let j=1;j<=N_JORNADAS;j++){
+    const scores=PAREJAS.map(p=>({id:p.id,total:getTotalPareja(p.id,j)})).filter(s=>s.total!==null);
+    if(!scores.length) continue;
+    scores.sort((a,b)=>b.total-a.total);
+    scores.forEach((s,i)=>{totals[s.id]+=PUNTOS[i]||0;});
   }
   return totals;
 }
 
-function getRanking() {
-  const pts = calcPuntosLiga();
-  return PAREJAS
-    .map(p => ({ pareja: p, puntos: pts[p] }))
-    .sort((a, b) => b.puntos - a.puntos);
+function getRanking(){
+  const pts=calcPuntos();
+  return PAREJAS.map(p=>({...p,puntos:pts[p.id]})).sort((a,b)=>b.puntos-a.puntos);
 }
 
 // ---- NAV ----
-function goTo(id, btn) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sec-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  currentSection = id;
-  if (id === 'dashboard') renderDashboard();
-  else if (id === 'stats') renderStats();
-  else if (id === 'calendario') renderCalendario();
-  else if (id === 'viajes') renderViajes();
+function goTo(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  currentSection=id;
+  if(id==='dashboard') renderDashboard();
+  else if(id==='tarjeta') renderTarjeta();
+  else if(id==='stats') renderStats();
+  else if(id==='calendario') renderCalendario();
+  else if(id==='viajes') renderViajes();
 }
 
+function renderAll(){renderDashboard();renderTarjeta();renderCalendario();renderViajes();}
+
 // ---- DASHBOARD ----
-function renderDashboard() {
-  const ranking = getRanking();
-  const pts = calcPuntosLiga();
-  const hasPlayed = ranking.some(r => r.puntos > 0);
+function renderDashboard(){
+  const ranking=getRanking();
+  const pts=calcPuntos();
+  const hasPlayed=ranking.some(r=>r.puntos>0);
+  const liderCard=document.getElementById('lider-card');
+  if(hasPlayed){
+    liderCard.style.display='block';
+    document.getElementById('lider-name').textContent=ranking[0].nombre;
+    document.getElementById('lider-pts').textContent=`${ranking[0].puntos} puntos en la liga`;
+  }else{liderCard.style.display='none';}
 
-  // Líder
-  const liderCard = document.getElementById('lider-card');
-  if (hasPlayed) {
-    liderCard.style.display = 'block';
-    document.getElementById('lider-name').textContent = ranking[0].pareja;
-    document.getElementById('lider-pts').textContent = `${ranking[0].puntos} puntos en la liga`;
-  } else {
-    liderCard.style.display = 'none';
-  }
-
-  // Ranking
-  document.getElementById('ranking-list').innerHTML = ranking.map((r, i) => {
-    const posClass = i === 0 ? 'p1' : i === 1 ? 'p2' : i === 2 ? 'p3' : 'pN';
-    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+  document.getElementById('ranking-list').innerHTML=ranking.map((r,i)=>{
+    const pc=i===0?'p1':i===1?'p2':i===2?'p3':'pN';
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    let totalStbl=0;
+    for(let j=1;j<=N_JORNADAS;j++){const t=getTotalPareja(r.id,j);if(t!==null)totalStbl+=t;}
     return `<div class="ranking-item">
-      <div class="rank-pos ${posClass}">${typeof medal === 'string' ? medal : medal}</div>
-      <div class="rank-name">${r.pareja}</div>
-      <div>
-        <div class="rank-pts">${r.puntos}</div>
-        <div class="rank-pts-label">pts</div>
+      <div class="rank-pos ${pc}">${medal}</div>
+      <div class="rank-name">
+        <div>${r.nombre}</div>
+        ${totalStbl>0?`<div style="font-size:10px;color:var(--text-light)">Stbl acumulado: ${totalStbl}</div>`:''}
       </div>
+      <div><div class="rank-pts">${r.puntos}</div><div class="rank-pts-label">pts</div></div>
     </div>`;
   }).join('');
 
-  // Barras
-  const maxPts = Math.max(...Object.values(pts), 1);
-  document.getElementById('mini-bars').innerHTML = `<div class="bar-wrap">` +
-    PAREJAS.map((p, i) => {
-      const h = Math.round((pts[p] / maxPts) * 52) + 4;
-      return `<div class="bar-col">
-        <div class="bar-val">${pts[p]}</div>
-        <div class="bar" style="height:${h}px;background:${COLORES[i]}"></div>
-        <div class="bar-lbl">${p.split(' & ')[0]}</div>
-      </div>`;
-    }).join('') + `</div>`;
+  const maxPts=Math.max(...Object.values(pts),1);
+  document.getElementById('mini-bars').innerHTML=`<div class="bar-wrap">`+
+    PAREJAS.map((p,i)=>{
+      const h=Math.round((pts[p.id]/maxPts)*52)+4;
+      return `<div class="bar-col"><div class="bar-val">${pts[p.id]}</div><div class="bar" style="height:${h}px;background:${COLORES[i]}"></div><div class="bar-lbl">${p.nombre.split(' & ')[0]}</div></div>`;
+    }).join('')+`</div>`;
 
-  // Indicator
-  let jugadas = 0;
-  for (let j = 1; j <= N_JORNADAS; j++) {
-    if (PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined)) jugadas++;
+  let jugadas=0;
+  for(let j=1;j<=N_JORNADAS;j++){
+    if(PAREJAS.some(p=>p.jugadores.some(jg=>calcTotalStableford(jg.id,j)!==null))) jugadas++;
   }
-  document.getElementById('jornada-indicator').innerHTML =
-    `<div class="dot"></div> ${jugadas}/${N_JORNADAS} jornadas jugadas`;
+  document.getElementById('jornada-indicator').innerHTML=`<div class="dot"></div> ${jugadas}/${N_JORNADAS} jornadas jugadas`;
 }
 
-// ---- RESULTADOS ----
-function renderResultados() {
-  // Tabs
-  document.getElementById('jornada-tabs').innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
-    const j = i + 1;
-    const hasData = PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined);
-    return `<button class="jtab${j === activeJornada ? ' active' : ''}" onclick="selectJornada(${j})">J${j}${hasData ? ' ✓' : ''}</button>`;
+// ---- TARJETA ----
+function renderTarjeta(){
+  // Tabs jornadas
+  document.getElementById('tarjeta-jornada-tabs').innerHTML=Array.from({length:N_JORNADAS},(_,i)=>{
+    const j=i+1;
+    return `<button class="jtab${j===activeTarjetaJornada?' active':''}" onclick="selectTarjetaJornada(${j})">J${j}</button>`;
   }).join('');
-  renderResultadosForm();
+
+  // Selector jugadores
+  document.getElementById('jugador-selector').innerHTML=TODOS_JUGADORES.map(j=>`
+    <button class="jsel-btn${j.id===activeJugadorId?' active':''}" onclick="selectJugador('${j.id}')">
+      ${j.nombre}
+    </button>`).join('');
+
+  renderTarjetaContent();
 }
 
-function selectJornada(j) {
-  activeJornada = j;
-  renderResultados();
+function selectTarjetaJornada(j){activeTarjetaJornada=j;renderTarjeta();}
+function selectJugador(id){activeJugadorId=id;renderTarjetaContent();
+  document.querySelectorAll('.jsel-btn').forEach(b=>{b.classList.toggle('active',b.textContent.trim()===TODOS_JUGADORES.find(j=>j.id===id)?.nombre);});
 }
 
-function renderResultadosForm() {
-  document.getElementById('resultados-form').innerHTML = `
-    <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px">Stableford de cada pareja en la jornada ${activeJornada}:</p>
-    ${PAREJAS.map(p => {
-      const val = STATE.resultados[`J${activeJornada}_${p}`] ?? '';
-      return `<div class="result-row">
-        <div class="result-name">${p}</div>
-        <input class="result-input" type="number" min="0" max="72" placeholder="–"
-          id="inp_${p.replace(/[^a-z]/gi,'_')}" value="${val}" inputmode="numeric">
-      </div>`;
-    }).join('')}
-    <button class="save-btn" id="btn-save-res" onclick="saveResultados()">✅ Guardar Jornada ${activeJornada}</button>
+function renderTarjetaContent(){
+  const jugador=TODOS_JUGADORES.find(j=>j.id===activeJugadorId);
+  if(!jugador){return;}
+  const hcp=getHcp(activeJugadorId);
+  const j=activeTarjetaJornada;
+
+  let totalGolpes=0,totalStbl=0,totalPar=0;
+  const filas=Array.from({length:18},(_,i)=>{
+    const h=i+1;
+    const par=getPar(j,h);
+    const extras=getExtrasHoyo(hcp,h);
+    const golpes=STATE.golpes[`J${j}_${activeJugadorId}_H${h}`]??'';
+    const stbl=golpes!==''?calcStablefordHoyo(Number(golpes),par,extras):null;
+    if(golpes!==''){totalGolpes+=Number(golpes);totalPar+=par;}
+    if(stbl!==null) totalStbl+=stbl;
+
+    let ptsClass='pts-zero',ptsLabel='';
+    if(stbl!==null){
+      if(stbl>=4){ptsClass='pts-eagle';ptsLabel=stbl;}
+      else if(stbl===3){ptsClass='pts-birdie';ptsLabel='3';}
+      else if(stbl===2){ptsClass='pts-par';ptsLabel='2';}
+      else if(stbl===1){ptsClass='pts-bogey';ptsLabel='1';}
+      else{ptsClass='pts-zero';ptsLabel='0';}
+    }
+
+    return `<tr>
+      <td>${h}</td>
+      <td><input class="par-input" type="number" min="3" max="6" value="${par}" inputmode="numeric"
+        onchange="updatePar(${j},${h},this.value)"></td>
+      <td style="font-size:11px;color:var(--text-light)">+${extras}</td>
+      <td><input class="golpe-input" type="number" min="1" max="20" placeholder="–" value="${golpes}" inputmode="numeric"
+        oninput="updateGolpeLocal(${j},'${activeJugadorId}',${h},this.value,${par},${extras})"></td>
+      <td class="pts-cell ${ptsClass}" id="pts_${h}">${ptsLabel||'–'}</td>
+    </tr>`;
+  }).join('');
+
+  const hayGolpes=Object.keys(STATE.golpes).some(k=>k.startsWith(`J${j}_${activeJugadorId}_`));
+
+  document.getElementById('tarjeta-content').innerHTML=`
+    <div class="info-box">
+      <strong>${jugador.nombre}</strong> · Hcp ${hcp} · Jornada ${j}
+      ${STATE.calendario[`J${j}`]?.campo?` · ${STATE.calendario[`J${j}`].campo}`:''}
+    </div>
+    ${totalStbl>0?`<div class="stbl-total">${totalStbl}</div><div class="stbl-label">Puntos Stableford</div>`:''}
+    <div style="overflow-x:auto">
+      <table class="hoyo-table">
+        <thead><tr><th>Hoyo</th><th>Par</th><th>Extra</th><th>Golpes</th><th>Pts</th></tr></thead>
+        <tbody>${filas}</tbody>
+        <tfoot><tr class="total-row"><td>Total</td><td>${totalPar||PAR_CAMPO}</td><td></td><td>${totalGolpes||'–'}</td><td class="${totalStbl>0?'pts-par':''}">${totalStbl||'–'}</td></tr></tfoot>
+      </table>
+    </div>
+    <button class="save-btn" onclick="saveTarjeta()">✅ Guardar tarjeta</button>
+    ${hayGolpes?`<button class="save-btn secondary" style="margin-top:8px" onclick="if(confirm('¿Borrar todos los golpes de esta jornada?'))clearTarjeta()">🗑️ Borrar tarjeta</button>`:''}
   `;
 }
 
-async function saveResultados() {
-  const btn = document.getElementById('btn-save-res');
-  btn.disabled = true; btn.textContent = 'Guardando...';
-  setSyncing(true);
+function updateGolpeLocal(jornada,jugadorId,hoyo,val,par,extras){
+  if(val===''){
+    delete STATE.golpes[`J${jornada}_${jugadorId}_H${hoyo}`];
+  }else{
+    STATE.golpes[`J${jornada}_${jugadorId}_H${hoyo}`]=Number(val);
+  }
+  // Actualizar pts de este hoyo en tiempo real
+  const stbl=val!==''?calcStablefordHoyo(Number(val),par,extras):null;
+  const el=document.getElementById(`pts_${hoyo}`);
+  if(el){
+    el.className='pts-cell '+(stbl===null?'pts-zero':stbl>=4?'pts-eagle':stbl===3?'pts-birdie':stbl===2?'pts-par':stbl===1?'pts-bogey':'pts-zero');
+    el.textContent=stbl!==null?stbl:'–';
+  }
+  // Actualizar total
+  const hcp=getHcp(jugadorId);
+  let tot=0;
+  for(let h=1;h<=18;h++){
+    const g=STATE.golpes[`J${jornada}_${jugadorId}_H${h}`];
+    if(g!==undefined){
+      const p=getPar(jornada,h);
+      const ex=getExtrasHoyo(hcp,h);
+      tot+=calcStablefordHoyo(g,p,ex)||0;
+    }
+  }
+  const totalEl=document.querySelector('.stbl-total');
+  if(totalEl&&tot>0) totalEl.textContent=tot;
+}
 
-  try {
-    for (const p of PAREJAS) {
-      const id = 'inp_' + p.replace(/[^a-z]/gi,'_');
-      const v = document.getElementById(id)?.value.trim();
-      if (v !== '' && v !== undefined) {
-        await db.from('liga_resultados').upsert(
-          { jornada: activeJornada, pareja: p, stableford: Number(v), updated_at: new Date().toISOString() },
-          { onConflict: 'jornada,pareja' }
-        );
-        STATE.resultados[`J${activeJornada}_${p}`] = Number(v);
+async function updatePar(jornada,hoyo,val){
+  const par=parseInt(val)||4;
+  STATE.hoyos[`J${jornada}_H${hoyo}`]=par;
+  await db.from('liga_hoyos').upsert({jornada,hoyo,par,updated_at:new Date().toISOString()},{onConflict:'jornada,hoyo'});
+}
+
+async function saveTarjeta(){
+  setSyncing(true);
+  const btn=event.target;
+  btn.disabled=true;btn.textContent='Guardando...';
+  try{
+    const j=activeTarjetaJornada;
+    const jugadorId=activeJugadorId;
+    // Guardar golpes
+    for(let h=1;h<=18;h++){
+      const g=STATE.golpes[`J${j}_${jugadorId}_H${h}`];
+      if(g!==undefined){
+        await db.from('liga_golpes').upsert(
+          {jornada:j,jugador_id:jugadorId,hoyo:h,golpes:g,updated_at:new Date().toISOString()},
+          {onConflict:'jornada,jugador_id,hoyo'});
       }
     }
-    showToast('✅ Jornada ' + activeJornada + ' guardada');
-    renderResultados();
+    // Calcular y guardar stableford total en liga_resultados
+    const total=calcTotalStableford(jugadorId,j);
+    if(total!==null){
+      await db.from('liga_resultados').upsert(
+        {jornada:j,pareja:jugadorId,stableford:total,updated_at:new Date().toISOString()},
+        {onConflict:'jornada,pareja'});
+      STATE.resultados[`J${j}_${jugadorId}`]=total;
+    }
+    showToast('✅ Tarjeta guardada');
     renderDashboard();
-  } catch(e) {
-    showToast('❌ Error al guardar');
-  }
+  }catch(e){showToast('❌ Error al guardar');}
+  btn.disabled=false;btn.textContent='✅ Guardar tarjeta';
   setSyncing(false);
+}
+
+async function clearTarjeta(){
+  const j=activeTarjetaJornada;
+  const jugadorId=activeJugadorId;
+  for(let h=1;h<=18;h++) delete STATE.golpes[`J${j}_${jugadorId}_H${h}`];
+  await db.from('liga_golpes').delete().eq('jornada',j).eq('jugador_id',jugadorId);
+  await db.from('liga_resultados').delete().eq('jornada',j).eq('pareja',jugadorId);
+  delete STATE.resultados[`J${j}_${jugadorId}`];
+  showToast('🗑️ Tarjeta borrada');
+  renderTarjetaContent();
+  renderDashboard();
+}
+
+// ---- HANDICAPS ----
+function renderHcpList(){
+  document.getElementById('hcp-list').innerHTML=PAREJAS.map(p=>
+    p.jugadores.map(jg=>`
+      <div class="hcp-row">
+        <div style="flex:1"><div style="font-weight:600;font-size:0.9rem">${jg.nombre}</div><div style="font-size:10px;color:var(--text-light)">${p.nombre}</div></div>
+        <input class="hcp-input" type="number" step="0.1" min="0" max="54" id="hcp_${jg.id}" value="${STATE.handicaps[jg.id]??jg.hcp}" inputmode="decimal">
+      </div>`).join('')
+  ).join('');
+}
+
+function saveHandicaps(){
+  PAREJAS.forEach(p=>p.jugadores.forEach(jg=>{
+    const el=document.getElementById(`hcp_${jg.id}`);
+    if(el) STATE.handicaps[jg.id]=parseFloat(el.value)||jg.hcp;
+  }));
+  localStorage.setItem('liga_hcp_2026',JSON.stringify(STATE.handicaps));
+  showToast('🏌️ Handicaps guardados');
 }
 
 // ---- CALENDARIO ----
-function renderCalendario() {
-  document.getElementById('calendario-list').innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
-    const j = i + 1;
-    const c = STATE.calendario[`J${j}`] || {};
-    const hasResult = PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined);
+function renderCalendario(){
+  document.getElementById('calendario-list').innerHTML=Array.from({length:N_JORNADAS},(_,i)=>{
+    const j=i+1;const c=STATE.calendario[`J${j}`]||{};
+    const has=PAREJAS.some(p=>p.jugadores.some(jg=>calcTotalStableford(jg.id,j)!==null));
     return `<div class="cal-row">
-      <div><div class="cal-num${hasResult ? ' played' : ''}">${j}</div></div>
+      <div><div class="cal-num${has?' played':''}">${j}</div></div>
       <div>
-        <input class="cal-input" placeholder="Campo de golf" id="cal_campo_${j}" value="${c.campo || ''}"/>
-        <input class="cal-input" placeholder="Ciudad" id="cal_ciudad_${j}" value="${c.ciudad || ''}" style="margin-top:5px"/>
-        <input class="cal-input" type="date" id="cal_fecha_${j}" value="${c.fecha || ''}" style="margin-top:5px"/>
-        <input class="cal-input" placeholder="Hora de salida (ej: 9:00)" id="cal_hora_${j}" value="${c.hora || ''}" style="margin-top:5px"/>
+        <input class="cal-input" placeholder="Campo de golf" id="cal_campo_${j}" value="${c.campo||''}"/>
+        <input class="cal-input" placeholder="Ciudad" id="cal_ciudad_${j}" value="${c.ciudad||''}" style="margin-top:5px"/>
+        <input class="cal-input" type="date" id="cal_fecha_${j}" value="${c.fecha||''}" style="margin-top:5px"/>
+        <input class="cal-input" placeholder="Hora salida (ej: 9:00)" id="cal_hora_${j}" value="${c.hora||''}" style="margin-top:5px"/>
       </div>
     </div>`;
   }).join('');
 }
 
-async function saveCalendario() {
-  const btn = document.getElementById('btn-save-cal');
-  btn.disabled = true; btn.textContent = 'Guardando...';
-  setSyncing(true);
-  try {
-    for (let j = 1; j <= N_JORNADAS; j++) {
-      const campo = document.getElementById(`cal_campo_${j}`)?.value || '';
-      const ciudad = document.getElementById(`cal_ciudad_${j}`)?.value || '';
-      const fecha = document.getElementById(`cal_fecha_${j}`)?.value || null;
-      const hora = document.getElementById(`cal_hora_${j}`)?.value || '';
-      await db.from('liga_calendario').upsert(
-        { jornada: j, campo, ciudad, fecha, hora, updated_at: new Date().toISOString() },
-        { onConflict: 'jornada' }
-      );
-      STATE.calendario[`J${j}`] = { campo, ciudad, fecha, hora };
+async function saveCalendario(){
+  const btn=document.getElementById('btn-save-cal');
+  btn.disabled=true;btn.textContent='Guardando...';setSyncing(true);
+  try{
+    for(let j=1;j<=N_JORNADAS;j++){
+      const campo=document.getElementById(`cal_campo_${j}`)?.value||'';
+      const ciudad=document.getElementById(`cal_ciudad_${j}`)?.value||'';
+      const fecha=document.getElementById(`cal_fecha_${j}`)?.value||null;
+      const hora=document.getElementById(`cal_hora_${j}`)?.value||'';
+      await db.from('liga_calendario').upsert({jornada:j,campo,ciudad,fecha,hora,updated_at:new Date().toISOString()},{onConflict:'jornada'});
+      STATE.calendario[`J${j}`]={campo,ciudad,fecha,hora};
     }
     showToast('📅 Calendario guardado');
-  } catch(e) {
-    showToast('❌ Error al guardar');
-  }
-  btn.disabled = false; btn.textContent = '💾 Guardar calendario';
-  setSyncing(false);
+  }catch(e){showToast('❌ Error');}
+  btn.disabled=false;btn.textContent='💾 Guardar calendario';setSyncing(false);
 }
 
 // ---- STATS ----
-function renderStats() {
-  const pts = calcPuntosLiga();
-  const ranking = getRanking();
-  let jugadas = 0;
-  for (let j = 1; j <= N_JORNADAS; j++) {
-    if (PAREJAS.some(p => STATE.resultados[`J${j}_${p}`] !== undefined)) jugadas++;
+function renderStats(){
+  const pts=calcPuntos();const ranking=getRanking();
+  let jugadas=0;
+  for(let j=1;j<=N_JORNADAS;j++){
+    if(PAREJAS.some(p=>p.jugadores.some(jg=>calcTotalStableford(jg.id,j)!==null))) jugadas++;
   }
-
-  const statsCards = PAREJAS.map(p => {
-    const scores = [];
-    for (let j = 1; j <= N_JORNADAS; j++) {
-      const v = STATE.resultados[`J${j}_${p}`];
-      if (v !== undefined && v !== null) scores.push(Number(v));
-    }
-    return {
-      p,
-      media: scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–',
-      mejor: scores.length ? Math.max(...scores) : '–',
-      totalPts: pts[p],
-      scores
-    };
-  });
-
-  document.getElementById('stats-content').innerHTML = `
+  document.getElementById('stats-content').innerHTML=`
     <div class="stats-grid">
-      <div class="stat-box">
-        <div class="stat-label">Jornadas</div>
-        <div class="stat-value">${jugadas}</div>
-        <div class="stat-sub">de ${N_JORNADAS} jugadas</div>
-      </div>
-      <div class="stat-box gold">
-        <div class="stat-label">Líder</div>
-        <div class="stat-value" style="font-size:1rem;margin-top:4px">${ranking[0].pareja.split(' & ')[0]}</div>
-        <div class="stat-sub">${ranking[0].puntos} pts</div>
-      </div>
+      <div class="stat-box"><div class="stat-label">Jornadas</div><div class="stat-value">${jugadas}</div><div class="stat-sub">de ${N_JORNADAS}</div></div>
+      <div class="stat-box gold"><div class="stat-label">Líder</div><div class="stat-value" style="font-size:1rem;margin-top:4px">${ranking[0].nombre.split(' & ')[0]}</div><div class="stat-sub">${ranking[0].puntos} pts</div></div>
     </div>
-    ${statsCards.map(s => `
-      <div class="card">
-        <div class="card-title">${s.p}</div>
+    ${PAREJAS.map(p=>{
+      const totales=[];
+      for(let j=1;j<=N_JORNADAS;j++){const t=getTotalPareja(p.id,j);if(t!==null)totales.push(t);}
+      const media=totales.length?(totales.reduce((a,b)=>a+b,0)/totales.length).toFixed(1):'–';
+      const mejor=totales.length?Math.max(...totales):'–';
+      return `<div class="card">
+        <div class="card-title">${p.nombre}</div>
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:10px">Hcp: ${p.jugadores.map(j=>j.nombre+' '+STATE.handicaps[j.id]).join(' · ')}</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center">
-          <div>
-            <div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--green-mid)">${s.totalPts}</div>
-            <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Pts liga</div>
-          </div>
-          <div>
-            <div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--green-mid)">${s.media}</div>
-            <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Media</div>
-          </div>
-          <div>
-            <div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--gold)">${s.mejor}</div>
-            <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Mejor J</div>
-          </div>
+          <div><div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--green-mid)">${pts[p.id]}</div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase">Pts liga</div></div>
+          <div><div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--green-mid)">${media}</div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase">Media</div></div>
+          <div><div style="font-size:1.5rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--gold)">${mejor}</div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase">Mejor</div></div>
         </div>
-        ${s.scores.length ? `
-        <div style="margin-top:14px">
-          <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Por jornada</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${Array.from({length:N_JORNADAS},(_,i)=>{
-              const v = STATE.resultados[`J${i+1}_${s.p}`];
-              return `<div style="width:32px;height:32px;border-radius:8px;background:${v!==undefined?'var(--green-bright)':'rgba(0,0,0,0.05)'};color:${v!==undefined?'white':'var(--text-light)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">${v!==undefined?v:'–'}</div>`;
-            }).join('')}
-          </div>
-        </div>` : ''}
-      </div>
-    `).join('')}
-  `;
+        ${totales.length?`<div style="margin-top:14px"><div style="font-size:10px;color:var(--text-light);margin-bottom:6px;text-transform:uppercase">Total pareja por jornada</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">${Array.from({length:N_JORNADAS},(_,i)=>{const t=getTotalPareja(p.id,i+1);return`<div style="width:36px;height:36px;border-radius:8px;background:${t!==null?'var(--green-bright)':'rgba(0,0,0,0.05)'};color:${t!==null?'white':'var(--text-light)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">${t!==null?t:'–'}</div>`;}).join('')}</div></div>`:''}
+      </div>`;
+    }).join('')}`;
 }
 
 // ---- VIAJES ----
-function renderViajes() {
-  document.getElementById('viajes-list').innerHTML = Array.from({length: N_JORNADAS}, (_, i) => {
-    const j = i + 1;
-    const v = STATE.viajes[`J${j}`] || {};
-    const cal = STATE.calendario[`J${j}`] || {};
-    const titulo = cal.campo ? `J${j} — ${cal.campo}` : `Jornada ${j}`;
+function renderViajes(){
+  document.getElementById('viajes-list').innerHTML=Array.from({length:N_JORNADAS},(_,i)=>{
+    const j=i+1;const v=STATE.viajes[`J${j}`]||{};const cal=STATE.calendario[`J${j}`]||{};
     return `<div class="viaje-row">
-      <div class="viaje-title">
-        ${titulo}
-        ${cal.fecha ? `<span class="viaje-badge">${formatDate(cal.fecha)}</span>` : ''}
-      </div>
+      <div class="viaje-title">${cal.campo?`J${j} — ${cal.campo}`:`Jornada ${j}`}${cal.fecha?`<span class="viaje-badge">${formatDate(cal.fecha)}</span>`:''}</div>
       <input class="viaje-input" placeholder="🏨 Hotel" id="viaje_hotel_${j}" value="${v.hotel||''}"/>
       <input class="viaje-input" placeholder="🍽️ Restaurante" id="viaje_rest_${j}" value="${v.restaurante||''}" style="margin-top:5px"/>
       <input class="viaje-input" placeholder="👥 Personas confirmadas" id="viaje_personas_${j}" value="${v.personas||''}" style="margin-top:5px"/>
       <input class="viaje-input" placeholder="📝 Notas" id="viaje_notas_${j}" value="${v.notas||''}" style="margin-top:5px"/>
     </div>`;
   }).join('');
+  renderHcpList();
 }
 
-async function saveViajes() {
-  const btn = document.getElementById('btn-save-viajes');
-  btn.disabled = true; btn.textContent = 'Guardando...';
-  setSyncing(true);
-  try {
-    for (let j = 1; j <= N_JORNADAS; j++) {
-      const hotel = document.getElementById(`viaje_hotel_${j}`)?.value || '';
-      const restaurante = document.getElementById(`viaje_rest_${j}`)?.value || '';
-      const personas = document.getElementById(`viaje_personas_${j}`)?.value || '';
-      const notas = document.getElementById(`viaje_notas_${j}`)?.value || '';
-      await db.from('liga_viajes').upsert(
-        { jornada: j, hotel, restaurante, personas, notas, updated_at: new Date().toISOString() },
-        { onConflict: 'jornada' }
-      );
-      STATE.viajes[`J${j}`] = { hotel, restaurante, personas, notas };
+async function saveViajes(){
+  const btn=document.getElementById('btn-save-viajes');
+  btn.disabled=true;btn.textContent='Guardando...';setSyncing(true);
+  try{
+    for(let j=1;j<=N_JORNADAS;j++){
+      const hotel=document.getElementById(`viaje_hotel_${j}`)?.value||'';
+      const restaurante=document.getElementById(`viaje_rest_${j}`)?.value||'';
+      const personas=document.getElementById(`viaje_personas_${j}`)?.value||'';
+      const notas=document.getElementById(`viaje_notas_${j}`)?.value||'';
+      await db.from('liga_viajes').upsert({jornada:j,hotel,restaurante,personas,notas,updated_at:new Date().toISOString()},{onConflict:'jornada'});
+      STATE.viajes[`J${j}`]={hotel,restaurante,personas,notas};
     }
     showToast('✈️ Viajes guardados');
-  } catch(e) {
-    showToast('❌ Error al guardar');
-  }
-  btn.disabled = false; btn.textContent = '💾 Guardar viajes';
-  setSyncing(false);
+  }catch(e){showToast('❌ Error');}
+  btn.disabled=false;btn.textContent='💾 Guardar viajes';setSyncing(false);
 }
 
-// ---- UTILS ----
-function formatDate(d) {
-  if (!d) return '';
-  try { return new Date(d).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }); }
-  catch(e) { return d; }
-}
+function formatDate(d){if(!d)return'';try{return new Date(d).toLocaleDateString('es-ES',{day:'2-digit',month:'short'});}catch(e){return d;}}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function setSyncing(on){document.getElementById('sync-dot').className='sync-dot'+(on?' syncing':'');}
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-function setSyncing(on, error = false) {
-  const dot = document.getElementById('sync-dot');
-  dot.className = 'sync-dot' + (on ? ' syncing' : error ? ' error' : '');
-}
-
-// ---- START ----
 init();
 </script>
 </body>
