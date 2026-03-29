@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -646,6 +645,7 @@ function renderCalendario(){
         <input class="cal-input" placeholder="Ciudad" id="cal_ciudad_${j}" value="${c.ciudad||''}" style="margin-top:5px"/>
         <input class="cal-input" type="date" id="cal_fecha_${j}" value="${c.fecha||''}" style="margin-top:5px"/>
         <input class="cal-input" placeholder="Hora salida (ej: 9:00)" id="cal_hora_${j}" value="${c.hora||''}" style="margin-top:5px"/>
+        ${c.campo?`<a id="wa_btn_${j}" href="#" onclick="avisarWhatsApp(${j});return false;" style="display:block;margin-top:8px;width:100%;padding:8px;background:#25D366;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;">📲 Avisar al grupo por WhatsApp</a>`:''}
       </div>
     </div>`;
   }).join('');
@@ -664,8 +664,22 @@ async function saveCalendario(){
       STATE.calendario[`J${j}`]={campo,ciudad,fecha,hora};
     }
     showToast('📅 Calendario guardado');
+    renderCalendario();
   }catch(e){showToast('❌ Error');}
   btn.disabled=false;btn.textContent='💾 Guardar calendario';setSyncing(false);
+}
+
+function avisarWhatsApp(j){
+  const c=STATE.calendario[`J${j}`]||{};
+  const campo=c.campo||'por confirmar';
+  const ciudad=c.ciudad?` (${c.ciudad})`:'';
+  const fecha=c.fecha?formatDate(c.fecha):'fecha por confirmar';
+  const hora=c.hora||'hora por confirmar';
+  const msg=`⛳ *Liga Golf 2026 — Jornada ${j}*\n\n📅 ${fecha} a las ${hora}\n🏌️ ${campo}${ciudad}\n\n¡Apunta la fecha! Entra en la app:\nhttps://bherrero25.github.io/Liga-golf-2026`;
+  const url='whatsapp://send?text='+encodeURIComponent(msg);
+  const a=document.getElementById(`wa_btn_${j}`);
+  if(a){a.href=url;a.onclick=null;a.click();}
+  else{window.location.href=url;}
 }
 
 // ---- STATS ----
